@@ -57,3 +57,40 @@ mongosh -u myuser -p mypassword --authenticationDatabase mydatabase
 This ensures that the user has proper access.
 
 You’re all set! Let me know if you run into any issues.
+
+==================
+
+You can achieve this by running a JavaScript loop inside the MongoDB shell (mongosh). Here’s an example script that creates 10 databases and a corresponding user for each one:
+
+for (let i = 1; i <= 10; i++) {
+  const dbName = "database" + i;
+  const userName = "user" + i;
+  const password = "password" + i;
+  // Switch context to the new database
+  let currentDB = db.getSiblingDB(dbName);
+  // Create a user for this database with readWrite privileges
+  currentDB.createUser({
+    user: userName,
+    pwd: password,
+    roles: [{ role: "readWrite", db: dbName }]
+  });
+}
+
+How to Run This Script
+	1.	Save the Script:
+Save the above code in a file, for example, createUsersAndDBs.js.
+	2.	Run the Script Using mongosh:
+Open your terminal and run:
+
+mongosh createUsersAndDBs.js
+
+This will execute the loop, creating 10 databases (database1 to database10) and 10 users (user1 to user10) with corresponding passwords (password1 to password10).
+
+Notes
+	•	Database Creation:
+MongoDB creates a database when you first store data in it. In this case, since you’re creating a user on each database, MongoDB will implicitly create the database context even if no collections exist yet.
+	•	Customization:
+Feel free to modify the naming scheme or the credentials as needed.
+
+This one script lets you create multiple databases and users in one go.
+
